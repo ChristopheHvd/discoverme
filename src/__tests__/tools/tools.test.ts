@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-// Utiliser le mock au lieu du service ru00e9el pour les tests
+// Utiliser le mock au lieu du service réel pour les tests
 import { profileServiceMongo } from '../mocks/profileServiceMongo.mock.js';
 
 // Type pour les handlers d'outils
@@ -15,7 +15,7 @@ import {
 import { jest } from '@jest/globals';
 
 // Mock du service de profil
-// Utiliser un chemin absolu pour u00e9viter les problèmes de ru00e9solution de chemin
+// Utiliser un chemin absolu pour éviter les problèmes de résolution de chemin
 jest.mock('/Users/christophehavard/Code/discoverme-clean/discoverme/src/services/dataService', () => {
   const mockProfile = {
     name: 'Test User',
@@ -32,17 +32,17 @@ jest.mock('/Users/christophehavard/Code/discoverme-clean/discoverme/src/services
       getProfileSection: jest.fn((section) => mockProfile[section as keyof typeof mockProfile]),
       checkAvailability: jest.fn().mockReturnValue({
         available: true,
-        message: 'Test User est disponible le 2025-04-03 u00e0 14:00.'
+        message: 'Test User est disponible le 2025-04-03 à 14:00.'
       }),
       requestContact: jest.fn().mockReturnValue({
         success: true,
-        message: 'Votre demande de contact avec Test User par email a u00e9tu00e9 enregistru00e9e. Raison: Test'
+        message: 'Votre demande de contact avec Test User par email a été enregistrée. Raison: Test'
       })
     }
   };
 });
 
-// Interface pour le profil mocku00e9
+// Interface pour le profil mock  é
 interface MockProfile {
   name: string;
   title: string;
@@ -52,7 +52,7 @@ interface MockProfile {
   contact: { email: string; linkedin: string };
 }
 
-// Interface pour la ru00e9ponse de disponibilitu00e9
+// Interface pour la réponse de disponibilité
 interface AvailabilityResponse {
   available: boolean;
   message: string;
