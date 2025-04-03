@@ -37,7 +37,7 @@ try {
   console.error('Connexion MongoDB établie avec succès');
   
   // Initialiser le service de profil MongoDB (création de l'utilisateur par défaut si nécessaire)
-  await profileServiceMongo.initialize();
+  // await profileServiceMongo.initialize();
   console.error('Service de profil MongoDB initialisé');
 } catch (error) {
   console.error('Erreur lors de l\'initialisation de MongoDB:', error);
