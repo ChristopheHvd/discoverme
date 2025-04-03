@@ -24,25 +24,23 @@ const mockUser: MockUser = {
 };
 
 // Cru00e9er les fonctions mock avec des types corrects
-const connect = jest.fn().mockResolvedValue(true);
-const disconnect = jest.fn().mockResolvedValue(true);
+const connect = jest.fn().mockImplementation(() => Promise.resolve(true));
+const disconnect = jest.fn().mockImplementation(() => Promise.resolve(true));
 
 // Cru00e9er les fonctions de requ00eate mock
-const findFn = jest.fn().mockReturnValue({
-  limit: jest.fn().mockReturnValue({
-    lean: jest.fn().mockResolvedValue([mockUser])
-  })
-});
+const leanFn = jest.fn().mockImplementation(() => Promise.resolve([mockUser]));
+const limitFn = jest.fn().mockImplementation(() => ({ lean: leanFn }));
+const findFn = jest.fn().mockImplementation(() => ({ limit: limitFn }));
 
-const findOneFn = jest.fn().mockResolvedValue(mockUser);
-const createFn = jest.fn().mockResolvedValue(mockUser);
+const findOneFn = jest.fn().mockImplementation(() => Promise.resolve(mockUser));
+const createFn = jest.fn().mockImplementation(() => Promise.resolve(mockUser));
 
 // Cru00e9er la fonction model mock
-const modelFn = jest.fn().mockReturnValue({
+const modelFn = jest.fn().mockImplementation(() => ({
   find: findFn,
   findOne: findOneFn,
   create: createFn
-});
+}));
 
 // Cru00e9er le mock Schema
 const Schema = function() { return {}; };

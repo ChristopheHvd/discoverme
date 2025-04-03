@@ -15,7 +15,8 @@ import {
 import { jest } from '@jest/globals';
 
 // Mock du service de profil
-jest.mock('../../services/dataService.ts', () => {
+// Utiliser un chemin absolu pour u00e9viter les problèmes de ru00e9solution de chemin
+jest.mock('/Users/christophehavard/Code/discoverme-clean/discoverme/src/services/dataService', () => {
   const mockProfile = {
     name: 'Test User',
     title: 'Test Developer',

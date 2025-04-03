@@ -66,8 +66,11 @@ const mockProfile: MockProfile = {
 // Cru00e9er les fonctions mock individuellement
 const initializeFn = jest.fn().mockImplementation(() => Promise.resolve(undefined));
 const getProfileFn = jest.fn().mockImplementation(() => Promise.resolve(mockProfile));
-const getProfileSectionFn = jest.fn().mockImplementation((section: string) => {
-  return Promise.resolve((mockProfile as any)[section] || null);
+// Utiliser une fonction sans typage explicite du paramètre pour éviter l'erreur
+const getProfileSectionFn = jest.fn().mockImplementation(section => {
+  // Cast le paramètre en string pour l'utiliser dans l'accès à l'objet
+  const sectionKey = section as string;
+  return Promise.resolve((mockProfile as any)[sectionKey] || null);
 });
 
 const availabilityResponse = {
