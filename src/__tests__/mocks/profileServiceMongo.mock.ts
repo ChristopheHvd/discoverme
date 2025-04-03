@@ -1,21 +1,57 @@
 // Mock du service de profil MongoDB pour les tests
+import { jest } from '@jest/globals';
 
-// Données fictives pour les tests
-const mockProfile = {
+// Interface pour le profil mocku00e9
+interface MockProfile {
+  name: string;
+  title: string;
+  skills: string[];
+  experience: Array<{
+    company: string;
+    role: string;
+    period: string;
+    description: string;
+  }>;
+  education: Array<{
+    institution: string;
+    degree: string;
+    year: string;
+  }>;
+  contact: {
+    email: string;
+    linkedin: string;
+  };
+  bio: string;
+}
+
+// Interface pour la ru00e9ponse de disponibilitu00e9
+interface AvailabilityResponse {
+  available: boolean;
+  message: string;
+}
+
+// Interface pour la ru00e9ponse de contact
+interface ContactResponse {
+  success: boolean;
+  message: string;
+}
+
+// Donnu00e9es fictives pour les tests
+const mockProfile: MockProfile = {
   name: 'John Doe',
-  title: 'Développeur Full Stack',
+  title: 'Du00e9veloppeur Full Stack',
   skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'GraphQL'],
   experience: [
     {
       company: 'Tech Company',
       role: 'Senior Developer',
       period: '2020-2023',
-      description: 'Développement d\'applications web modernes'
+      description: 'Du00e9veloppement d\'applications web modernes'
     }
   ],
   education: [
     {
-      institution: 'Université de Technologie',
+      institution: 'Universitu00e9 de Technologie',
       degree: 'Master en Informatique',
       year: '2019'
     }
@@ -24,27 +60,38 @@ const mockProfile = {
     email: 'john.doe@example.com',
     linkedin: 'linkedin.com/in/johndoe'
   },
-  bio: 'Développeur passionné avec plus de 5 ans d\'expérience'
+  bio: 'Du00e9veloppeur passionnu00e9 avec plus de 5 ans d\'expu00e9rience'
 };
 
-// Mock du service profileServiceMongo
+// Cru00e9er les fonctions mock individuellement
+const initializeFn = jest.fn().mockImplementation(() => Promise.resolve(undefined));
+const getProfileFn = jest.fn().mockImplementation(() => Promise.resolve(mockProfile));
+const getProfileSectionFn = jest.fn().mockImplementation((section: string) => {
+  return Promise.resolve((mockProfile as any)[section] || null);
+});
+
+const availabilityResponse = {
+  available: true,
+  message: 'John Doe est disponible le 2025-04-03 u00e0 14:00.'
+};
+const checkAvailabilityFn = jest.fn().mockImplementation(() => Promise.resolve(availabilityResponse));
+
+const contactResponse = {
+  success: true,
+  message: 'Votre demande de contact avec John Doe par email a u00e9tu00e9 enregistru00e9e. Raison: Test'
+};
+const requestContactFn = jest.fn().mockImplementation(() => Promise.resolve(contactResponse));
+
+// Mock du service profileServiceMongo avec des types corrects
 export const profileServiceMongo = {
-  initialize: jest.fn().mockResolvedValue(undefined),
-  getProfile: jest.fn().mockResolvedValue(mockProfile),
-  getProfileSection: jest.fn().mockImplementation((section: string) => {
-    return Promise.resolve((mockProfile as any)[section] || null);
-  }),
-  checkAvailability: jest.fn().mockResolvedValue({
-    available: true,
-    message: 'John Doe est disponible le 2025-04-03 à 14:00.'
-  }),
-  requestContact: jest.fn().mockResolvedValue({
-    success: true,
-    message: 'Votre demande de contact avec John Doe par email a été enregistrée. Raison: Test'
-  })
+  initialize: initializeFn,
+  getProfile: getProfileFn,
+  getProfileSection: getProfileSectionFn,
+  checkAvailability: checkAvailabilityFn,
+  requestContact: requestContactFn
 };
 
-// Réinitialiser tous les mocks
+// Ru00e9initialiser tous les mocks
 export const resetMocks = () => {
   jest.clearAllMocks();
 };
