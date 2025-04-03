@@ -5,6 +5,18 @@ import { registerAllResources } from './resources.js';
 import { serverConfig } from './config.js';
 import { profileServiceMongo } from './services/profileServiceMongo.js';
 import { connectDB } from './config/database.js';
+import { logger, setupGlobalLogger } from './utils/logger.js';
+
+// Configurer le logger global - toujours actif
+setupGlobalLogger();
+
+// Détecter si nous sommes en mode MCP (via l'inspecteur)
+if (process.argv.includes('--mcp-mode')) {
+  process.env.MCP_MODE = 'true';
+  logger.info('Démarrage en mode MCP - logs console désactivés, logs fichier actifs');
+} else {
+  logger.info('Démarrage normal - logs console et fichier actifs');
+}
 
 // Créer une instance du serveur MCP
 const server = new McpServer({
@@ -34,17 +46,17 @@ registerAllResources(server);
 // Initialiser la connexion MongoDB
 try {
   await connectDB();
-  console.error('Connexion MongoDB établie avec succès');
+  logger.info('Connexion MongoDB établie avec succès');
   
   // Initialiser le service de profil MongoDB (création de l'utilisateur par défaut si nécessaire)
   // await profileServiceMongo.initialize();
-  console.error('Service de profil MongoDB initialisé');
+  logger.info('Service de profil MongoDB initialisé');
 } catch (error) {
-  console.error('Erreur lors de l\'initialisation de MongoDB:', error);
+  logger.error('Erreur lors de l\'initialisation de MongoDB:', error);
 }
 
 // Démarrer le serveur avec le transport stdio
 const transport = new StdioServerTransport();
 await server.connect(transport);
 
-console.error('Serveur MCP DiscoverMe démarré');
+logger.info('Serveur MCP DiscoverMe démarré');
