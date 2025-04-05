@@ -1,5 +1,5 @@
 // Mock pour mongoose
-import { jest } from '@jest/globals';
+import { jest, describe, it, expect } from '@jest/globals';
 
 // Interface pour les donnu00e9es utilisateur mocku00e9es
 interface MockUser {

@@ -47,10 +47,6 @@ registerAllResources(server);
 try {
   await connectDB();
   logger.info('Connexion MongoDB établie avec succès');
-  
-  // Initialiser le service de profil MongoDB (création de l'utilisateur par défaut si nécessaire)
-  // await profileServiceMongo.initialize();
-  logger.info('Service de profil MongoDB initialisé');
 } catch (error) {
   logger.error('Erreur lors de l\'initialisation de MongoDB:', error);
 }

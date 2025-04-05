@@ -1,5 +1,5 @@
 // Mock du service de profil MongoDB pour les tests
-import { jest } from '@jest/globals';
+import { jest, describe, it, expect } from '@jest/globals';
 
 // Interface pour le profil mocku00e9
 interface MockProfile {

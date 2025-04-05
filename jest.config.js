@@ -19,6 +19,8 @@ export default {
     '<rootDir>/src/__tests__/mocks/',
     '<rootDir>/src/__tests__/setup.ts'
   ],
+  // Spécifier explicitement les fichiers de test
+  testRegex: '(/__tests__/(?!mocks/)(?!setup\.ts).*)\.(test|spec)\.[jt]sx?$',
   // Augmenter le timeout global pour les tests
   testTimeout: 30000,
 };
