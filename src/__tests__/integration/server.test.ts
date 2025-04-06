@@ -1,11 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { registerAllResources } from '../../resources.js';
-import {
-  registerGetProfileTool,
-  registerGetSkillsTool,
-  registerCheckAvailabilityTool,
-  registerRequestContactTool
-} from '../../tools.js';
+import { registerAllSearchTools } from '../../tools/searchTools.js';
+import { registerAllInteractionTools } from '../../tools/interactionTools.js';
+import { registerAllProfileResources } from '../../resources/profileResources.js';
+import { registerAllNetworkResources } from '../../resources/networkResources.js';
 
 // Avec les modules ES, il faut importer jest explicitement
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
@@ -28,22 +25,20 @@ describe('MCP Server Integration', () => {
     const resourceSpy = jest.spyOn(server, 'resource');
     const toolSpy = jest.spyOn(server, 'tool');
 
-    // Enregistrer les outils
-    registerGetProfileTool(server);
-    registerGetSkillsTool(server);
-    registerCheckAvailabilityTool(server);
-    registerRequestContactTool(server);
+    // Enregistrer les outils de recherche et d'interaction
+    registerAllSearchTools(server);
+    registerAllInteractionTools(server);
 
-    // Enregistrer les ressources
-    registerAllResources(server);
+    // Enregistrer les ressources de profil et de réseau
+    registerAllProfileResources(server);
+    registerAllNetworkResources(server);
 
     // Vu00e9rifier que les mu00e9thodes ont u00e9tu00e9 appelu00e9es le bon nombre de fois
-    // 5 ressources: profile, skills, experience, education, profile-details
-    expect(resourceSpy).toHaveBeenCalledTimes(5);
+    // 8 ressources: detailed-profile, user-skills, user-experience, user-education, profile-section, network, connections, recommendations
+    expect(resourceSpy).toHaveBeenCalledTimes(8);
     
-    // 5 outils: ping (dans index.ts), get-profile, get-skills, check-availability, request-contact
-    // Note: Comme nous n'incluons pas index.ts dans ce test, nous ne comptons que 4 outils
-    expect(toolSpy).toHaveBeenCalledTimes(4);
+    // 6 outils: search-by-name, search-by-skills, advanced-search, request-introduction, recommend-profile, send-message
+    expect(toolSpy).toHaveBeenCalledTimes(6);
 
     // Nettoyer les espions
     resourceSpy.mockRestore();

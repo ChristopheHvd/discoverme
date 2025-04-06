@@ -2,10 +2,10 @@
  * Script pour peupler la base de données MongoDB avec des données fictives
  */
 import mongoose from 'mongoose';
-import { connectDB, disconnectDB } from '../config/database.js';
-import User from '../models/User.js';
-import Content from '../models/Content.js';
-import Action from '../models/Action.js';
+import { connectDB, disconnectDB } from '../../config/database.js';
+import User from '../../models/User.js';
+import Content, { IContent } from '../../models/Content.js';
+import Action from '../../models/Action.js';
 
 // Données fictives pour les utilisateurs
 const users = [
@@ -328,7 +328,7 @@ async function seedDatabase() {
     // Mettre à jour les utilisateurs avec les IDs des contenus
     const userContentMap = new Map<string, mongoose.Types.ObjectId[]>();
     
-    createdContents.forEach(content => {
+    createdContents.forEach((content) => {
       const userId = content.userId.toString();
       if (!userContentMap.has(userId)) {
         userContentMap.set(userId, []);

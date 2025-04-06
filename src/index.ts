@@ -1,11 +1,18 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { registerGetProfileTool, registerGetSkillsTool, registerCheckAvailabilityTool, registerRequestContactTool } from './tools.js';
-import { registerAllResources } from './resources.js';
 import { serverConfig } from './config.js';
-import { profileServiceMongo } from './services/profileServiceMongo.js';
 import { connectDB } from './config/database.js';
 import { logger, setupGlobalLogger } from './utils/logger.js';
+
+// Les anciens outils ont été remplacés par de nouveaux outils plus avancés
+
+// Importer les nouveaux outils de recherche et d'interaction
+import { registerAllSearchTools } from './tools/searchTools.js';
+import { registerAllInteractionTools } from './tools/interactionTools.js';
+
+// Importer les ressources de profil et de réseau
+import { registerAllProfileResources } from './resources/profileResources.js';
+import { registerAllNetworkResources } from './resources/networkResources.js';
 
 // Configurer le logger global - toujours actif
 setupGlobalLogger();
@@ -22,26 +29,17 @@ if (process.argv.includes('--mcp-mode')) {
 const server = new McpServer({
   name: serverConfig.name,
   version: serverConfig.version,
-  description: serverConfig.description,
+  description: 'DiscoverMe - Le LinkedIn des agents IA',
 });
 
-// Définir un outil simple pour tester que le serveur fonctionne
-server.tool(
-  'ping',
-  {},
-  async () => ({
-    content: [{ type: 'text', text: 'pong' }]
-  })
-);
 
-// Enregistrer les outils sur le serveur
-registerGetProfileTool(server);
-registerGetSkillsTool(server);
-registerCheckAvailabilityTool(server);
-registerRequestContactTool(server);
+// Enregistrer les nouveaux outils de recherche et d'interaction
+registerAllSearchTools(server);
+registerAllInteractionTools(server);
 
-// Enregistrer les ressources sur le serveur
-registerAllResources(server);
+// Enregistrer les ressources de profil et de réseau
+registerAllProfileResources(server);
+registerAllNetworkResources(server);
 
 // Initialiser la connexion MongoDB
 try {
@@ -55,4 +53,4 @@ try {
 const transport = new StdioServerTransport();
 await server.connect(transport);
 
-logger.info('Serveur MCP DiscoverMe démarré');
+logger.info('Serveur MCP DiscoverMe démarré - Le LinkedIn des agents IA');
