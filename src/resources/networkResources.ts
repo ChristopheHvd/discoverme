@@ -1,11 +1,12 @@
 /**
- * Ressources de ruéseau pour DiscoverMe
+ * Ressources de réseau pour DiscoverMe
  * 
- * Ces ressources permettent aux agents IA d'accuéder aux informations
- * de ruéseau des utilisateurs (connexions, recommandations, etc.).
+ * Ces ressources permettent aux agents IA d'accéder aux informations
+ * de réseau des utilisateurs (connexions, recommandations, etc.).
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { logger } from '../utils/logger.js';
 
 // Donnuées factices pour simuler un ruéseau professionnel
 const mockNetworks = {
@@ -42,86 +43,122 @@ const mockNetworks = {
 };
 
 /**
- * Ressource pour le ruéseau d'un utilisateur
+ * Ressource pour le réseau d'un utilisateur
  */
 export const registerNetworkResource = (server: McpServer) => {
-  server.resource(
-    'network',
-    'network://user/{userId}',
-    async (uri, variables: Record<string, unknown>) => {
-      // Extraire l'ID de l'utilisateur
-      const userId = variables.userId as string;
-      
-      // En production, on ruécupu00e8rerait le ruéseau de l'utilisateur depuis la base de donnuées
-      // const network = await networkService.getUserNetwork(userId);
-      
-      // Simulation avec des donnuées factices
-      const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
-      
-      return {
-        contents: [{
-          uri: uri.href,
-          text: JSON.stringify(network, null, 2)
-        }]
-      };
+  server.resource({
+    name: 'network',
+    uriTemplate: 'network://user/{userId}',
+    handler: async (uri: URL, variables: Record<string, unknown>) => {
+      logger.info(`Resource called: network, URI: ${uri.href}, Variables: ${JSON.stringify(variables)}`);
+      try {
+        // Extraire l'ID de l'utilisateur
+        const userId = variables.userId as string;
+        
+        // En production, on récupèrerait le réseau de l'utilisateur depuis la base de données
+        // const network = await networkService.getUserNetwork(userId);
+        
+        // Simulation avec des données factices
+        const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
+        logger.info(`Network retrieved successfully for ${userId || 'default user'}`);
+        
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(network, null, 2)
+          }]
+        };
+      } catch (error) {
+        logger.error(`Error in network resource: ${error}`);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify({ error: 'Failed to retrieve network' }, null, 2)
+          }]
+        };
+      }
     }
-  );
+  });
 };
 
 /**
  * Ressource pour les connexions d'un utilisateur
  */
 export const registerConnectionsResource = (server: McpServer) => {
-  server.resource(
-    'connections',
-    'connections://user/{userId}',
-    async (uri, variables: Record<string, unknown>) => {
-      // Extraire l'ID de l'utilisateur
-      const userId = variables.userId as string;
-      
-      // En production, on ruécupu00e8rerait les connexions de l'utilisateur depuis la base de donnuées
-      // const connections = await networkService.getUserConnections(userId);
-      
-      // Simulation avec des donnuées factices
-      const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
-      const connections = network.connections;
-      
-      return {
-        contents: [{
-          uri: uri.href,
-          text: JSON.stringify(connections, null, 2)
-        }]
-      };
+  server.resource({
+    name: 'connections',
+    uriTemplate: 'connections://user/{userId}',
+    handler: async (uri: URL, variables: Record<string, unknown>) => {
+      logger.info(`Resource called: connections, URI: ${uri.href}, Variables: ${JSON.stringify(variables)}`);
+      try {
+        // Extraire l'ID de l'utilisateur
+        const userId = variables.userId as string;
+        
+        // En production, on récupèrerait les connexions de l'utilisateur depuis la base de données
+        // const connections = await networkService.getUserConnections(userId);
+        
+        // Simulation avec des données factices
+        const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
+        const connections = network.connections;
+        logger.info(`Connections retrieved successfully for ${userId || 'default user'}`);
+        
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(connections, null, 2)
+          }]
+        };
+      } catch (error) {
+        logger.error(`Error in connections resource: ${error}`);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify({ error: 'Failed to retrieve connections' }, null, 2)
+          }]
+        };
+      }
     }
-  );
+  });
 };
 
 /**
  * Ressource pour les recommandations d'un utilisateur
  */
 export const registerRecommendationsResource = (server: McpServer) => {
-  server.resource(
-    'recommendations',
-    'recommendations://user/{userId}',
-    async (uri, variables: Record<string, unknown>) => {
-      // Extraire l'ID de l'utilisateur
-      const userId = variables.userId as string;
-      
-      // En production, on ruécupu00e8rerait les recommandations de l'utilisateur depuis la base de donnuées
-      // const recommendations = await networkService.getUserRecommendations(userId);
-      
-      // Simulation avec des donnuées factices
-      const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
-      const recommendations = network.recommendations;
-      
-      return {
-        contents: [{
-          uri: uri.href,
-          text: JSON.stringify(recommendations, null, 2)
-        }]
-      };
+  server.resource({
+    name: 'recommendations',
+    uriTemplate: 'recommendations://user/{userId}',
+    handler: async (uri: URL, variables: Record<string, unknown>) => {
+      logger.info(`Resource called: recommendations, URI: ${uri.href}, Variables: ${JSON.stringify(variables)}`);
+      try {
+        // Extraire l'ID de l'utilisateur
+        const userId = variables.userId as string;
+        
+        // En production, on récupèrerait les recommandations de l'utilisateur depuis la base de données
+        // const recommendations = await networkService.getUserRecommendations(userId);
+        
+        // Simulation avec des données factices
+        const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
+        const recommendations = network.recommendations;
+        logger.info(`Recommendations retrieved successfully for ${userId || 'default user'}`);
+        
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(recommendations, null, 2)
+          }]
+        };
+      } catch (error) {
+        logger.error(`Error in recommendations resource: ${error}`);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify({ error: 'Failed to retrieve recommendations' }, null, 2)
+          }]
+        };
+      }
     }
-  );
+  });
 };
 
 /**
