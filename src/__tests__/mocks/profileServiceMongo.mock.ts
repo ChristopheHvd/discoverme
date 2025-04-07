@@ -1,7 +1,7 @@
 // Mock du service de profil MongoDB pour les tests
 import { jest, describe, it, expect } from '@jest/globals';
 
-// Interface pour le profil mocku00e9
+// Interface pour le profil mockué
 interface MockProfile {
   name: string;
   title: string;
@@ -24,34 +24,34 @@ interface MockProfile {
   bio: string;
 }
 
-// Interface pour la ru00e9ponse de disponibilitu00e9
+// Interface pour la ruéponse de disponibilitué
 interface AvailabilityResponse {
   available: boolean;
   message: string;
 }
 
-// Interface pour la ru00e9ponse de contact
+// Interface pour la ruéponse de contact
 interface ContactResponse {
   success: boolean;
   message: string;
 }
 
-// Donnu00e9es fictives pour les tests
+// Donnuées fictives pour les tests
 const mockProfile: MockProfile = {
   name: 'John Doe',
-  title: 'Du00e9veloppeur Full Stack',
+  title: 'Duéveloppeur Full Stack',
   skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'GraphQL'],
   experience: [
     {
       company: 'Tech Company',
       role: 'Senior Developer',
       period: '2020-2023',
-      description: 'Du00e9veloppement d\'applications web modernes'
+      description: 'Duéveloppement d\'applications web modernes'
     }
   ],
   education: [
     {
-      institution: 'Universitu00e9 de Technologie',
+      institution: 'Universitué de Technologie',
       degree: 'Master en Informatique',
       year: '2019'
     }
@@ -60,10 +60,10 @@ const mockProfile: MockProfile = {
     email: 'john.doe@example.com',
     linkedin: 'linkedin.com/in/johndoe'
   },
-  bio: 'Du00e9veloppeur passionnu00e9 avec plus de 5 ans d\'expu00e9rience'
+  bio: 'Duéveloppeur passionnué avec plus de 5 ans d\'expuérience'
 };
 
-// Cru00e9er les fonctions mock individuellement
+// Cruéer les fonctions mock individuellement
 const initializeFn = jest.fn().mockImplementation(() => Promise.resolve(undefined));
 const getProfileFn = jest.fn().mockImplementation(() => Promise.resolve(mockProfile));
 // Utiliser une fonction sans typage explicite du paramètre pour éviter l'erreur
@@ -81,7 +81,7 @@ const checkAvailabilityFn = jest.fn().mockImplementation(() => Promise.resolve(a
 
 const contactResponse = {
   success: true,
-  message: 'Votre demande de contact avec John Doe par email a u00e9tu00e9 enregistru00e9e. Raison: Test'
+  message: 'Votre demande de contact avec John Doe par email a uétué enregistruée. Raison: Test'
 };
 const requestContactFn = jest.fn().mockImplementation(() => Promise.resolve(contactResponse));
 
@@ -94,7 +94,7 @@ export const profileServiceMongo = {
   requestContact: requestContactFn
 };
 
-// Ru00e9initialiser tous les mocks
+// Ruéinitialiser tous les mocks
 export const resetMocks = () => {
   jest.clearAllMocks();
 };

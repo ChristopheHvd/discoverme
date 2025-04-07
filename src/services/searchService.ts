@@ -2,12 +2,13 @@
  * Service de recherche pour DiscoverMe
  * 
  * Ce service fournit des fonctionnalités de recherche avancée pour les profils utilisateurs.
- * Pour l'instant, il utilise des données factices, mais il pourrait être étendu
- * pour utiliser MongoDB Atlas Search ou Elasticsearch à l'avenir.
+ * Il utilise MongoDB pour stocker et interroger les données des utilisateurs.
+ * À l'avenir, il pourrait être amélioré avec MongoDB Atlas Search pour des recherches plus sophistiquées.
  */
 
 import { logger } from '../utils/logger.js';
-import UserModel from '../models/User.js';
+import UserModel, { IUser } from '../models/User.js';
+import mongoose from 'mongoose';
 
 // Types pour les paramètres de recherche
 export interface SearchByNameParams {
@@ -34,76 +35,30 @@ export interface AdvancedSearchParams {
 export interface SearchResult {
   _id: string;
   name: string;
-  title: string;
-  company?: string;
-  location?: string;
-  skills: string[];
+  headline?: string;
+  skills: Array<{
+    name: string;
+    level?: string;
+    endorsements?: number;
+  }>;
+  experience?: Array<{
+    title: string;
+    company: string;
+    startDate: Date;
+    endDate?: Date;
+    description?: string;
+  }>;
+  education?: Array<{
+    institution: string;
+    degree: string;
+    field?: string;
+    startYear: number;
+    endYear?: number;
+  }>;
   relevanceScore: number; // Score de pertinence entre 0 et 1
+  openToWork?: boolean;
+  profileViews?: number;
 }
-
-// Données factices pour simuler des résultats de recherche
-const mockProfiles = [
-  {
-    _id: '60d21b4667d0d8992e610c85',
-    name: 'Sophie Martin',
-    title: 'Développeuse Full Stack Senior',
-    company: 'TechInnovate',
-    location: 'Paris, France',
-    skills: ['JavaScript', 'React', 'Node.js', 'MongoDB', 'GraphQL', 'TypeScript'],
-    experience: [
-      { company: 'TechInnovate', position: 'Développeuse Full Stack Senior', years: 3 },
-      { company: 'WebSolutions', position: 'Développeuse Frontend', years: 2 }
-    ]
-  },
-  {
-    _id: '60d21b4667d0d8992e610c86',
-    name: 'Thomas Dubois',
-    title: 'Architecte Cloud',
-    company: 'CloudNative',
-    location: 'Lyon, France',
-    skills: ['AWS', 'Azure', 'Kubernetes', 'Docker', 'Terraform', 'Go', 'Python'],
-    experience: [
-      { company: 'CloudNative', position: 'Architecte Cloud', years: 4 },
-      { company: 'DataTech', position: 'DevOps Engineer', years: 3 }
-    ]
-  },
-  {
-    _id: '60d21b4667d0d8992e610c87',
-    name: 'Emma Bernard',
-    title: 'Data Scientist',
-    company: 'DataInsight',
-    location: 'Bordeaux, France',
-    skills: ['Python', 'R', 'Machine Learning', 'TensorFlow', 'SQL', 'Data Visualization'],
-    experience: [
-      { company: 'DataInsight', position: 'Data Scientist', years: 2 },
-      { company: 'AnalyticsPro', position: 'Data Analyst', years: 2 }
-    ]
-  },
-  {
-    _id: '60d21b4667d0d8992e610c88',
-    name: 'Lucas Moreau',
-    title: 'Ingénieur DevOps',
-    company: 'InfraScale',
-    location: 'Lille, France',
-    skills: ['Docker', 'Kubernetes', 'Jenkins', 'Ansible', 'Terraform', 'AWS', 'Linux'],
-    experience: [
-      { company: 'InfraScale', position: 'Ingénieur DevOps', years: 3 },
-      { company: 'TechOps', position: 'Administrateur Système', years: 2 }
-    ]
-  },
-  {
-    _id: '60d21b4667d0d8992e610c89',
-    name: 'Camille Leroy',
-    title: 'UX/UI Designer',
-    company: 'DesignFirst',
-    location: 'Nantes, France',
-    skills: ['Figma', 'Adobe XD', 'Sketch', 'User Research', 'Prototyping', 'HTML/CSS'],
-    experience: [
-      { company: 'DesignFirst', position: 'UX/UI Designer', years: 4 },
-      { company: 'CreativeAgency', position: 'UI Designer', years: 2 }
-    ]
-  }
-];
 
 /**
  * Classe de service pour les fonctionnalités de recherche
@@ -116,25 +71,15 @@ class SearchService {
     try {
       logger.info(`Recherche de profils par nom: ${query}`);
       
-      // En production, on utiliserait MongoDB
-      // const results = await UserModel.find(
-      //   { name: { $regex: query, $options: 'i' } },
-      //   { name: 1, title: 1, skills: 1 }
-      // ).limit(limit).lean();
+      // Utiliser MongoDB pour la recherche
+      const users = await UserModel.find(
+        { name: { $regex: query, $options: 'i' } }
+      )
+      .limit(limit)
+      .lean();
       
-      // Simulation avec des données factices
-      const results = mockProfiles
-        .filter(profile => profile.name.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, limit)
-        .map(profile => ({
-          _id: profile._id,
-          name: profile.name,
-          title: profile.title,
-          company: profile.company,
-          location: profile.location,
-          skills: profile.skills,
-          relevanceScore: this._calculateRelevanceScore(profile, { nameQuery: query })
-        }));
+      // Formater les résultats
+      const results = users.map(user => this._formatSearchResult(user, { nameQuery: query }));
       
       return results;
     } catch (error) {
@@ -150,35 +95,23 @@ class SearchService {
     try {
       logger.info(`Recherche de profils par compétences: ${skills.join(', ')}`);
       
-      // En production, on utiliserait MongoDB
-      // const query = matchAll
-      //   ? { skills: { $all: skills } }
-      //   : { skills: { $in: skills } };
-      // const results = await UserModel.find(query).limit(limit).lean();
+      // Construire la requête MongoDB en fonction du paramètre matchAll
+      let query;
+      if (matchAll) {
+        // Doit correspondre à toutes les compétences (utiliser $all)
+        query = { 'skills.name': { $all: skills.map(skill => new RegExp(skill, 'i')) } };
+      } else {
+        // Doit correspondre à au moins une des compétences (utiliser $in)
+        query = { 'skills.name': { $in: skills.map(skill => new RegExp(skill, 'i')) } };
+      }
       
-      // Simulation avec des données factices
-      const results = mockProfiles
-        .filter(profile => {
-          if (matchAll) {
-            return skills.every(skill => 
-              profile.skills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
-            );
-          } else {
-            return skills.some(skill => 
-              profile.skills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
-            );
-          }
-        })
-        .slice(0, limit)
-        .map(profile => ({
-          _id: profile._id,
-          name: profile.name,
-          title: profile.title,
-          company: profile.company,
-          location: profile.location,
-          skills: profile.skills,
-          relevanceScore: this._calculateRelevanceScore(profile, { skillsQuery: skills })
-        }));
+      // Exécuter la requête
+      const users = await UserModel.find(query)
+        .limit(limit)
+        .lean();
+      
+      // Formater les résultats
+      const results = users.map(user => this._formatSearchResult(user, { skillsQuery: skills }));
       
       return results;
     } catch (error) {
@@ -194,72 +127,97 @@ class SearchService {
     try {
       logger.info(`Recherche avancée avec paramètres: ${JSON.stringify(params)}`);
       
-      // En production, on utiliserait MongoDB avec une requête complexe
-      // const query = {};
-      // if (params.keywords) query.$text = { $search: params.keywords };
-      // if (params.company) query['experience.company'] = { $regex: params.company, $options: 'i' };
-      // ...
+      // Construire la requête MongoDB
+      const query: any = {};
+      const aggregationPipeline: any[] = [];
       
-      // Simulation avec des données factices
-      let results = [...mockProfiles];
-      
-      // Filtrer par mots-clés (recherche dans le nom, titre et compétences)
+      // Recherche par mots-clés (nom, headline, compétences)
       if (params.keywords) {
-        const keywords = params.keywords.toLowerCase();
-        results = results.filter(profile => 
-          profile.name.toLowerCase().includes(keywords) ||
-          profile.title.toLowerCase().includes(keywords) ||
-          profile.skills.some(skill => skill.toLowerCase().includes(keywords))
-        );
+        const keywordRegex = new RegExp(params.keywords, 'i');
+        query.$or = [
+          { name: keywordRegex },
+          { headline: keywordRegex },
+          { 'skills.name': keywordRegex }
+        ];
       }
       
-      // Filtrer par entreprise
+      // Recherche par entreprise (dans les expériences professionnelles)
       if (params.company) {
-        const company = params.company.toLowerCase();
-        results = results.filter(profile => 
-          profile.company?.toLowerCase().includes(company) ||
-          profile.experience.some(exp => exp.company.toLowerCase().includes(company))
-        );
+        query['experience.company'] = new RegExp(params.company, 'i');
       }
       
-      // Filtrer par poste
+      // Recherche par poste (dans le titre ou les expériences)
       if (params.position) {
-        const position = params.position.toLowerCase();
-        results = results.filter(profile => 
-          profile.title.toLowerCase().includes(position) ||
-          profile.experience.some(exp => exp.position.toLowerCase().includes(position))
+        query.$or = query.$or || [];
+        query.$or.push(
+          { headline: new RegExp(params.position, 'i') },
+          { 'experience.title': new RegExp(params.position, 'i') }
         );
       }
       
-      // Filtrer par localisation
-      if (params.location) {
-        const location = params.location.toLowerCase();
-        results = results.filter(profile => 
-          profile.location?.toLowerCase().includes(location)
-        );
-      }
+      // Recherche par localisation (à implémenter plus tard dans le modèle User)
+      // if (params.location) {
+      //   query.location = new RegExp(params.location, 'i');
+      // }
       
-      // Filtrer par années d'expérience minimum
+      // Recherche par années d'expérience minimum
       if (params.experience) {
-        results = results.filter(profile => {
-          const totalExperience = profile.experience.reduce((sum, exp) => sum + exp.years, 0);
-          return totalExperience >= params.experience!;
-        });
+        // Ajouter un pipeline d'agrégation pour calculer l'expérience totale
+        aggregationPipeline.push(
+          {
+            $addFields: {
+              totalExperience: {
+                $reduce: {
+                  input: '$experience',
+                  initialValue: 0,
+                  in: {
+                    $add: [
+                      '$$value',
+                      {
+                        $divide: [
+                          {
+                            $subtract: [
+                              { $ifNull: ['$$this.endDate', new Date()] },
+                              '$$this.startDate'
+                            ]
+                          },
+                          // Convertir millisecondes en années (approximatif)
+                          31536000000 // 1000 * 60 * 60 * 24 * 365
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            $match: {
+              totalExperience: { $gte: params.experience }
+            }
+          }
+        );
       }
       
-      // Limiter le nombre de résultats
-      results = results.slice(0, params.limit || 10);
+      // Exécuter la requête avec ou sans agrégation
+      let users;
+      if (aggregationPipeline.length > 0) {
+        // Ajouter le matching initial au pipeline d'agrégation
+        aggregationPipeline.unshift({ $match: query });
+        
+        // Ajouter la limite au pipeline
+        aggregationPipeline.push({ $limit: params.limit || 10 });
+        
+        users = await UserModel.aggregate(aggregationPipeline);
+      } else {
+        // Utiliser une simple requête find si pas besoin d'agrégation
+        users = await UserModel.find(query)
+          .limit(params.limit || 10)
+          .lean();
+      }
       
       // Formater les résultats
-      return results.map(profile => ({
-        _id: profile._id,
-        name: profile.name,
-        title: profile.title,
-        company: profile.company,
-        location: profile.location,
-        skills: profile.skills,
-        relevanceScore: this._calculateRelevanceScore(profile, params)
-      }));
+      return users.map(user => this._formatSearchResult(user, params));
     } catch (error) {
       logger.error('Erreur lors de la recherche avancée:', error);
       return [];
@@ -267,31 +225,55 @@ class SearchService {
   }
 
   /**
+   * Formate un utilisateur en résultat de recherche
+   * @private
+   */
+  private _formatSearchResult(user: any, query: any): SearchResult {
+    // Extraire les données pertinentes du profil utilisateur
+    return {
+      _id: user._id.toString(),
+      name: user.name,
+      headline: user.headline,
+      skills: user.skills || [],
+      experience: user.experience || [],
+      education: user.education || [],
+      relevanceScore: this._calculateRelevanceScore(user, query),
+      openToWork: user.openToWork,
+      profileViews: user.profileViews
+    };
+  }
+
+  /**
    * Calcule un score de pertinence pour un profil par rapport à une requête
    * @private
    */
-  private _calculateRelevanceScore(profile: any, query: any): number {
+  private _calculateRelevanceScore(user: any, query: any): number {
     let score = 0.5; // Score de base
     
     // Score basé sur la correspondance du nom
-    if (query.nameQuery && profile.name) {
-      const nameMatch = profile.name.toLowerCase().includes(query.nameQuery.toLowerCase());
+    if (query.nameQuery && user.name) {
+      const nameMatch = user.name.toLowerCase().includes(query.nameQuery.toLowerCase());
       if (nameMatch) score += 0.3;
     }
     
     // Score basé sur la correspondance des compétences
-    if (query.skillsQuery && profile.skills) {
+    if (query.skillsQuery && user.skills && user.skills.length > 0) {
       const matchingSkills = query.skillsQuery.filter((skill: string) => 
-        profile.skills.some((s: string) => s.toLowerCase().includes(skill.toLowerCase()))
+        user.skills.some((s: any) => s.name.toLowerCase().includes(skill.toLowerCase()))
       );
       score += (matchingSkills.length / query.skillsQuery.length) * 0.3;
     }
     
     // Score basé sur la correspondance de l'entreprise
-    if (query.company && profile.company) {
-      const companyMatch = profile.company.toLowerCase().includes(query.company.toLowerCase());
+    if (query.company && user.experience && user.experience.length > 0) {
+      const companyMatch = user.experience.some((exp: any) => 
+        exp.company.toLowerCase().includes(query.company.toLowerCase())
+      );
       if (companyMatch) score += 0.2;
     }
+    
+    // Score bonus pour les profils ouverts aux opportunités
+    if (user.openToWork) score += 0.1;
     
     // Normaliser le score entre 0 et 1
     return Math.min(Math.max(score, 0), 1);

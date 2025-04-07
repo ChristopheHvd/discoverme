@@ -1,5 +1,5 @@
 /**
- * Script pour compiler et exu00e9cuter le script de seeding
+ * Script pour compiler et exuécuter le script de seeding
  */
 
 // Compiler le script TypeScript
@@ -16,7 +16,7 @@ const scriptPath = path.join(__dirname, '..', '..', 'dist', 'scripts', 'seed-dat
 
 console.log('Compilation du script de seeding...');
 
-// Exu00e9cuter la compilation TypeScript
+// Exuécuter la compilation TypeScript
 exec('npm run build', (error, stdout, stderr) => {
   if (error) {
     console.error(`Erreur de compilation: ${error.message}`);
@@ -28,13 +28,13 @@ exec('npm run build', (error, stdout, stderr) => {
     return;
   }
   
-  console.log('Compilation terminu00e9e avec succu00e8s');
-  console.log('Exu00e9cution du script de seeding...');
+  console.log('Compilation terminuée avec succu00e8s');
+  console.log('Exuécution du script de seeding...');
   
-  // Exu00e9cuter le script compilu00e9
+  // Exuécuter le script compilué
   exec(`node ${scriptPath}`, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Erreur d'exu00e9cution: ${error.message}`);
+      console.error(`Erreur d'exuécution: ${error.message}`);
       return;
     }
     
@@ -43,6 +43,6 @@ exec('npm run build', (error, stdout, stderr) => {
     }
     
     console.log(stdout);
-    console.log('Script de seeding exu00e9cutu00e9 avec succu00e8s');
+    console.log('Script de seeding exuécutué avec succu00e8s');
   });
 });

@@ -6,9 +6,10 @@ import { logger, setupGlobalLogger } from './utils/logger.js';
 
 // Les anciens outils ont été remplacés par de nouveaux outils plus avancés
 
-// Importer les nouveaux outils de recherche et d'interaction
+// Importer les nouveaux outils de recherche, d'interaction et de recommandation
 import { registerAllSearchTools } from './tools/searchTools.js';
 import { registerAllInteractionTools } from './tools/interactionTools.js';
+import { registerAllRecommendationTools } from './tools/recommendationTools.js';
 
 // Importer les ressources de profil et de réseau
 import { registerAllProfileResources } from './resources/profileResources.js';
@@ -33,9 +34,10 @@ const server = new McpServer({
 });
 
 
-// Enregistrer les nouveaux outils de recherche et d'interaction
+// Enregistrer les nouveaux outils de recherche, d'interaction et de recommandation
 registerAllSearchTools(server);
 registerAllInteractionTools(server);
+registerAllRecommendationTools(server);
 
 // Enregistrer les ressources de profil et de réseau
 registerAllProfileResources(server);

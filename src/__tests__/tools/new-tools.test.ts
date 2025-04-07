@@ -14,7 +14,7 @@ describe('DiscoverMe New Tools', () => {
   let mockToolHandler: jest.Mock;
 
   beforeEach(() => {
-    // Cru00e9er un mock du serveur MCP
+    // Cruéer un mock du serveur MCP
     mockToolHandler = jest.fn();
     server = {
       tool: mockToolHandler,
@@ -27,10 +27,10 @@ describe('DiscoverMe New Tools', () => {
       // Enregistrer les outils de recherche
       registerAllSearchTools(server);
       
-      // Vu00e9rifier que 3 outils de recherche ont u00e9tu00e9 enregistru00e9s
+      // Vuérifier que 3 outils de recherche ont uétué enregistrués
       expect(mockToolHandler).toHaveBeenCalledTimes(3);
       
-      // Vu00e9rifier les noms des outils enregistru00e9s
+      // Vuérifier les noms des outils enregistrués
       const toolNames = mockToolHandler.mock.calls.map(call => call[0]);
       expect(toolNames).toContain('search-by-name');
       expect(toolNames).toContain('search-by-skills');
@@ -41,21 +41,21 @@ describe('DiscoverMe New Tools', () => {
       // Enregistrer les outils de recherche
       registerAllSearchTools(server);
       
-      // Vu00e9rifier les schu00e9mas des outils
+      // Vuérifier les schuémas des outils
       const searchByNameSchema = mockToolHandler.mock.calls.find(call => call[0] === 'search-by-name')?.[1];
       const searchBySkillsSchema = mockToolHandler.mock.calls.find(call => call[0] === 'search-by-skills')?.[1];
       const advancedSearchSchema = mockToolHandler.mock.calls.find(call => call[0] === 'advanced-search')?.[1];
       
-      // Vu00e9rifier le schu00e9ma de search-by-name
+      // Vuérifier le schuéma de search-by-name
       expect(searchByNameSchema).toHaveProperty('query');
       expect(searchByNameSchema).toHaveProperty('limit');
       
-      // Vu00e9rifier le schu00e9ma de search-by-skills
+      // Vuérifier le schuéma de search-by-skills
       expect(searchBySkillsSchema).toHaveProperty('skills');
       expect(searchBySkillsSchema).toHaveProperty('matchAll');
       expect(searchBySkillsSchema).toHaveProperty('limit');
       
-      // Vu00e9rifier le schu00e9ma de advanced-search
+      // Vuérifier le schuéma de advanced-search
       expect(advancedSearchSchema).toHaveProperty('keywords');
       expect(advancedSearchSchema).toHaveProperty('company');
       expect(advancedSearchSchema).toHaveProperty('position');
@@ -70,10 +70,10 @@ describe('DiscoverMe New Tools', () => {
       // Enregistrer les outils d'interaction
       registerAllInteractionTools(server);
       
-      // Vu00e9rifier que 3 outils d'interaction ont u00e9tu00e9 enregistru00e9s
+      // Vuérifier que 3 outils d'interaction ont uétué enregistrués
       expect(mockToolHandler).toHaveBeenCalledTimes(3);
       
-      // Vu00e9rifier les noms des outils enregistru00e9s
+      // Vuérifier les noms des outils enregistrués
       const toolNames = mockToolHandler.mock.calls.map(call => call[0]);
       expect(toolNames).toContain('request-introduction');
       expect(toolNames).toContain('recommend-profile');
@@ -84,24 +84,24 @@ describe('DiscoverMe New Tools', () => {
       // Enregistrer les outils d'interaction
       registerAllInteractionTools(server);
       
-      // Vu00e9rifier les schu00e9mas des outils
+      // Vuérifier les schuémas des outils
       const requestIntroSchema = mockToolHandler.mock.calls.find(call => call[0] === 'request-introduction')?.[1];
       const recommendProfileSchema = mockToolHandler.mock.calls.find(call => call[0] === 'recommend-profile')?.[1];
       const sendMessageSchema = mockToolHandler.mock.calls.find(call => call[0] === 'send-message')?.[1];
       
-      // Vu00e9rifier le schu00e9ma de request-introduction
+      // Vuérifier le schuéma de request-introduction
       expect(requestIntroSchema).toHaveProperty('userId');
       expect(requestIntroSchema).toHaveProperty('agentId');
       expect(requestIntroSchema).toHaveProperty('reason');
       expect(requestIntroSchema).toHaveProperty('message');
       
-      // Vu00e9rifier le schu00e9ma de recommend-profile
+      // Vuérifier le schuéma de recommend-profile
       expect(recommendProfileSchema).toHaveProperty('userId');
       expect(recommendProfileSchema).toHaveProperty('recommenderId');
       expect(recommendProfileSchema).toHaveProperty('skills');
       expect(recommendProfileSchema).toHaveProperty('message');
       
-      // Vu00e9rifier le schu00e9ma de send-message
+      // Vuérifier le schuéma de send-message
       expect(sendMessageSchema).toHaveProperty('userId');
       expect(sendMessageSchema).toHaveProperty('senderId');
       expect(sendMessageSchema).toHaveProperty('content');

@@ -1,13 +1,13 @@
 /**
- * Ressources de ru00e9seau pour DiscoverMe
+ * Ressources de ruéseau pour DiscoverMe
  * 
- * Ces ressources permettent aux agents IA d'accu00e9der aux informations
- * de ru00e9seau des utilisateurs (connexions, recommandations, etc.).
+ * Ces ressources permettent aux agents IA d'accuéder aux informations
+ * de ruéseau des utilisateurs (connexions, recommandations, etc.).
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-// Donnu00e9es factices pour simuler un ru00e9seau professionnel
+// Donnuées factices pour simuler un ruéseau professionnel
 const mockNetworks = {
   '60d21b4667d0d8992e610c85': {
     connections: [
@@ -16,8 +16,8 @@ const mockNetworks = {
       { userId: '60d21b4667d0d8992e610c89', name: 'Camille Leroy', relationship: '1st', connectedSince: '2024-01-10' }
     ],
     recommendations: [
-      { userId: '60d21b4667d0d8992e610c86', name: 'Thomas Dubois', date: '2023-06-20', text: 'Sophie est une du00e9veloppeuse exceptionnelle avec une grande expertise en React et Node.js.' },
-      { userId: '60d21b4667d0d8992e610c89', name: 'Camille Leroy', date: '2024-02-05', text: 'J\'ai eu le plaisir de travailler avec Sophie sur plusieurs projets. Son expertise technique et sa capacitu00e9 u00e0 ru00e9soudre des problu00e8mes complexes sont remarquables.' }
+      { userId: '60d21b4667d0d8992e610c86', name: 'Thomas Dubois', date: '2023-06-20', text: 'Sophie est une duéveloppeuse exceptionnelle avec une grande expertise en React et Node.js.' },
+      { userId: '60d21b4667d0d8992e610c89', name: 'Camille Leroy', date: '2024-02-05', text: 'J\'ai eu le plaisir de travailler avec Sophie sur plusieurs projets. Son expertise technique et sa capacitué u00e0 ruésoudre des problu00e8mes complexes sont remarquables.' }
     ]
   },
   '60d21b4667d0d8992e610c86': {
@@ -42,7 +42,7 @@ const mockNetworks = {
 };
 
 /**
- * Ressource pour le ru00e9seau d'un utilisateur
+ * Ressource pour le ruéseau d'un utilisateur
  */
 export const registerNetworkResource = (server: McpServer) => {
   server.resource(
@@ -52,10 +52,10 @@ export const registerNetworkResource = (server: McpServer) => {
       // Extraire l'ID de l'utilisateur
       const userId = variables.userId as string;
       
-      // En production, on ru00e9cupu00e8rerait le ru00e9seau de l'utilisateur depuis la base de donnu00e9es
+      // En production, on ruécupu00e8rerait le ruéseau de l'utilisateur depuis la base de donnuées
       // const network = await networkService.getUserNetwork(userId);
       
-      // Simulation avec des donnu00e9es factices
+      // Simulation avec des donnuées factices
       const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
       
       return {
@@ -79,10 +79,10 @@ export const registerConnectionsResource = (server: McpServer) => {
       // Extraire l'ID de l'utilisateur
       const userId = variables.userId as string;
       
-      // En production, on ru00e9cupu00e8rerait les connexions de l'utilisateur depuis la base de donnu00e9es
+      // En production, on ruécupu00e8rerait les connexions de l'utilisateur depuis la base de donnuées
       // const connections = await networkService.getUserConnections(userId);
       
-      // Simulation avec des donnu00e9es factices
+      // Simulation avec des donnuées factices
       const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
       const connections = network.connections;
       
@@ -107,10 +107,10 @@ export const registerRecommendationsResource = (server: McpServer) => {
       // Extraire l'ID de l'utilisateur
       const userId = variables.userId as string;
       
-      // En production, on ru00e9cupu00e8rerait les recommandations de l'utilisateur depuis la base de donnu00e9es
+      // En production, on ruécupu00e8rerait les recommandations de l'utilisateur depuis la base de donnuées
       // const recommendations = await networkService.getUserRecommendations(userId);
       
-      // Simulation avec des donnu00e9es factices
+      // Simulation avec des donnuées factices
       const network = mockNetworks[userId as keyof typeof mockNetworks] || mockNetworks.default;
       const recommendations = network.recommendations;
       
@@ -125,7 +125,7 @@ export const registerRecommendationsResource = (server: McpServer) => {
 };
 
 /**
- * Fonction pour enregistrer toutes les ressources de ru00e9seau
+ * Fonction pour enregistrer toutes les ressources de ruéseau
  */
 export const registerAllNetworkResources = (server: McpServer) => {
   registerNetworkResource(server);

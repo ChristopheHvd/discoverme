@@ -1,7 +1,7 @@
 /**
  * Service d'interaction pour DiscoverMe
  * 
- * Ce service fournit des fonctionnalitu00e9s d'interaction sociale entre les agents IA
+ * Ce service fournit des fonctionnalitués d'interaction sociale entre les agents IA
  * et les profils utilisateurs, comme les demandes d'introduction, les recommandations, etc.
  */
 
@@ -22,7 +22,7 @@ export interface ProfileRecommendation {
   message: string;
 }
 
-// Types pour les ru00e9sultats d'interaction
+// Types pour les ruésultats d'interaction
 export interface InteractionResult {
   success: boolean;
   message: string;
@@ -31,7 +31,7 @@ export interface InteractionResult {
 }
 
 /**
- * Classe de service pour les fonctionnalitu00e9s d'interaction sociale
+ * Classe de service pour les fonctionnalitués d'interaction sociale
  */
 class InteractionService {
   /**
@@ -41,13 +41,13 @@ class InteractionService {
     try {
       logger.info(`Demande d'introduction de l'agent ${agentId} u00e0 l'utilisateur ${userId}`);
       
-      // En production, on enregistrerait cette demande dans la base de donnu00e9es
+      // En production, on enregistrerait cette demande dans la base de donnuées
       // et on enverrait une notification u00e0 l'utilisateur
       
-      // Simulation d'une ru00e9ponse ru00e9ussie
+      // Simulation d'une ruéponse ruéussie
       return {
         success: true,
-        message: "Votre demande d'introduction a u00e9tu00e9 envoyu00e9e avec succu00e8s.",
+        message: "Votre demande d'introduction a uétué envoyuée avec succu00e8s.",
         requestId: `req_${Date.now()}_${Math.floor(Math.random() * 1000)}`
       };
     } catch (error) {
@@ -66,13 +66,13 @@ class InteractionService {
     try {
       logger.info(`Recommandation de l'utilisateur ${userId} par ${recommenderId}`);
       
-      // En production, on enregistrerait cette recommandation dans la base de donnu00e9es
+      // En production, on enregistrerait cette recommandation dans la base de donnuées
       // et on mettrait u00e0 jour le profil de l'utilisateur
       
-      // Simulation d'une ru00e9ponse ru00e9ussie
+      // Simulation d'une ruéponse ruéussie
       return {
         success: true,
-        message: "Votre recommandation a u00e9tu00e9 enregistru00e9e avec succu00e8s.",
+        message: "Votre recommandation a uétué enregistruée avec succu00e8s.",
         recommendationId: `rec_${Date.now()}_${Math.floor(Math.random() * 1000)}`
       };
     } catch (error) {
@@ -89,15 +89,15 @@ class InteractionService {
    */
   async sendMessage(userId: string, senderId: string, content: string): Promise<InteractionResult> {
     try {
-      logger.info(`Message envoyu00e9 u00e0 l'utilisateur ${userId} par ${senderId}`);
+      logger.info(`Message envoyué u00e0 l'utilisateur ${userId} par ${senderId}`);
       
-      // En production, on enregistrerait ce message dans la base de donnu00e9es
+      // En production, on enregistrerait ce message dans la base de donnuées
       // et on enverrait une notification u00e0 l'utilisateur
       
-      // Simulation d'une ru00e9ponse ru00e9ussie
+      // Simulation d'une ruéponse ruéussie
       return {
         success: true,
-        message: "Votre message a u00e9tu00e9 envoyu00e9 avec succu00e8s.",
+        message: "Votre message a uétué envoyué avec succu00e8s.",
         requestId: `msg_${Date.now()}_${Math.floor(Math.random() * 1000)}`
       };
     } catch (error) {

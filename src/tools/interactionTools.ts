@@ -2,7 +2,7 @@
  * Outils d'interaction pour DiscoverMe
  * 
  * Ces outils permettent aux agents IA d'interagir avec les profils professionnels
- * de diffu00e9rentes maniu00e8res.
+ * de diffuérentes maniu00e8res.
  */
 
 import { z } from 'zod';
@@ -19,7 +19,7 @@ export const registerRequestIntroductionTool = (server: McpServer) => {
       userId: z.string().describe('ID de l\'utilisateur u00e0 contacter'),
       agentId: z.string().describe('ID de l\'agent qui fait la demande'),
       reason: z.string().describe('Raison de la demande d\'introduction'),
-      message: z.string().describe('Message personnalisu00e9')
+      message: z.string().describe('Message personnalisué')
     },
     async ({ userId, agentId, reason, message }) => {
       const result = await interactionService.requestIntroduction({ userId, agentId, reason, message });
@@ -40,7 +40,7 @@ export const registerRecommendProfileTool = (server: McpServer) => {
     {
       userId: z.string().describe('ID de l\'utilisateur u00e0 recommander'),
       recommenderId: z.string().describe('ID de l\'agent qui fait la recommandation'),
-      skills: z.array(z.string()).optional().describe('Compu00e9tences spu00e9cifiques u00e0 recommander'),
+      skills: z.array(z.string()).optional().describe('Compuétences spuécifiques u00e0 recommander'),
       message: z.string().describe('Message de recommandation')
     },
     async ({ userId, recommenderId, skills, message }) => {
@@ -61,7 +61,7 @@ export const registerSendMessageTool = (server: McpServer) => {
     'send-message',
     {
       userId: z.string().describe('ID de l\'utilisateur destinataire'),
-      senderId: z.string().describe('ID de l\'expu00e9diteur'),
+      senderId: z.string().describe('ID de l\'expuéditeur'),
       content: z.string().describe('Contenu du message')
     },
     async ({ userId, senderId, content }) => {

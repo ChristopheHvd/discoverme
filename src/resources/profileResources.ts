@@ -1,7 +1,7 @@
 /**
  * Ressources de profil pour DiscoverMe
  * 
- * Ces ressources permettent aux agents IA d'accu00e9der aux informations
+ * Ces ressources permettent aux agents IA d'accuéder aux informations
  * de profil des utilisateurs.
  */
 
@@ -9,14 +9,14 @@ import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mc
 import { profileServiceMongo } from '../services/profileServiceMongo.js';
 
 /**
- * Ressource pour le profil du00e9taillu00e9
+ * Ressource pour le profil duétaillué
  */
 export const registerDetailedProfileResource = (server: McpServer) => {
   server.resource(
     'detailed-profile',
     'profile://user/{userId}',
     async (uri, variables) => {
-      // En production, on ru00e9cupu00e8rerait le profil spu00e9cifique
+      // En production, on ruécupu00e8rerait le profil spuécifique
       // const userId = variables.userId as string;
       // const profile = await userService.getDetailedProfile(userId);
       
@@ -34,14 +34,14 @@ export const registerDetailedProfileResource = (server: McpServer) => {
 };
 
 /**
- * Ressource pour les compu00e9tences spu00e9cifiques d'un utilisateur
+ * Ressource pour les compuétences spuécifiques d'un utilisateur
  */
 export const registerUserSkillsResource = (server: McpServer) => {
   server.resource(
     'user-skills',
     'skills://user/{userId}',
     async (uri, variables) => {
-      // En production, on ru00e9cupu00e8rerait les compu00e9tences d'un utilisateur spu00e9cifique
+      // En production, on ruécupu00e8rerait les compuétences d'un utilisateur spuécifique
       // const userId = variables.userId as string;
       // const skills = await userService.getUserSkills(userId);
       
@@ -59,14 +59,14 @@ export const registerUserSkillsResource = (server: McpServer) => {
 };
 
 /**
- * Ressource pour l'expu00e9rience professionnelle d'un utilisateur
+ * Ressource pour l'expuérience professionnelle d'un utilisateur
  */
 export const registerUserExperienceResource = (server: McpServer) => {
   server.resource(
     'user-experience',
     'experience://user/{userId}',
     async (uri, variables) => {
-      // En production, on ru00e9cupu00e8rerait l'expu00e9rience d'un utilisateur spu00e9cifique
+      // En production, on ruécupu00e8rerait l'expuérience d'un utilisateur spuécifique
       // const userId = variables.userId as string;
       // const experience = await userService.getUserExperience(userId);
       
@@ -84,14 +84,14 @@ export const registerUserExperienceResource = (server: McpServer) => {
 };
 
 /**
- * Ressource pour l'u00e9ducation d'un utilisateur
+ * Ressource pour l'uéducation d'un utilisateur
  */
 export const registerUserEducationResource = (server: McpServer) => {
   server.resource(
     'user-education',
     'education://user/{userId}',
     async (uri, variables) => {
-      // En production, on ru00e9cupu00e8rerait l'u00e9ducation d'un utilisateur spu00e9cifique
+      // En production, on ruécupu00e8rerait l'uéducation d'un utilisateur spuécifique
       // const userId = variables.userId as string;
       // const education = await userService.getUserEducation(userId);
       
@@ -109,7 +109,7 @@ export const registerUserEducationResource = (server: McpServer) => {
 };
 
 /**
- * Ressource pour une section spu00e9cifique du profil d'un utilisateur
+ * Ressource pour une section spuécifique du profil d'un utilisateur
  */
 export const registerProfileSectionResource = (server: McpServer) => {
   server.resource(
@@ -120,7 +120,7 @@ export const registerProfileSectionResource = (server: McpServer) => {
       // const userId = variables.userId as string;
       const section = variables.section as string;
       
-      // Vu00e9rifier si la section demandu00e9e est valide
+      // Vuérifier si la section demanduée est valide
       const validSections = ['name', 'title', 'skills', 'experience', 'education', 'contact', 'bio'];
       if (validSections.includes(section)) {
         const sectionData = await profileServiceMongo.getProfileSection(section as any);

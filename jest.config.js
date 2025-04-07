@@ -10,9 +10,9 @@ export default {
   moduleNameMapper: {
     '^(\.{1,2}/.*)\.js$': '$1',
   },
-  // Du00e9finir les variables d'environnement pour les tests
+  // Duéfinir les variables d'environnement pour les tests
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
-  // Ignorer les fichiers de du00e9finition TypeScript et les fichiers de mock
+  // Ignorer les fichiers de duéfinition TypeScript et les fichiers de mock
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '\.d\.ts$',

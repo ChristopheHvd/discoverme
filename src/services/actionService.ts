@@ -2,13 +2,13 @@ import Action, { IAction } from '../models/Action.js';
 import mongoose from 'mongoose';
 
 /**
- * Service pour gu00e9rer les opu00e9rations liu00e9es aux actions
+ * Service pour guérer les opuérations liuées aux actions
  */
 export class ActionService {
   /**
-   * Cru00e9e une nouvelle action
-   * @param actionData Les donnu00e9es de l'action u00e0 cru00e9er
-   * @returns L'action cru00e9u00e9e
+   * Cruée une nouvelle action
+   * @param actionData Les donnuées de l'action u00e0 cruéer
+   * @returns L'action cruéuée
    */
   async createAction(actionData: Partial<IAction>): Promise<IAction> {
     try {
@@ -16,27 +16,27 @@ export class ActionService {
       await action.save();
       return action;
     } catch (error) {
-      console.error('Erreur lors de la cru00e9ation de l\'action:', error);
+      console.error('Erreur lors de la cruéation de l\'action:', error);
       throw error;
     }
   }
 
   /**
-   * Ru00e9cupu00e8re une action par son ID
+   * Ruécupu00e8re une action par son ID
    * @param actionId L'ID de l'action
-   * @returns L'action trouvu00e9e ou null
+   * @returns L'action trouvuée ou null
    */
   async getActionById(actionId: string): Promise<IAction | null> {
     try {
       return await Action.findById(actionId);
     } catch (error) {
-      console.error('Erreur lors de la ru00e9cupu00e9ration de l\'action:', error);
+      console.error('Erreur lors de la ruécupuération de l\'action:', error);
       throw error;
     }
   }
 
   /**
-   * Ru00e9cupu00e8re toutes les actions d'un utilisateur
+   * Ruécupu00e8re toutes les actions d'un utilisateur
    * @param userId L'ID de l'utilisateur
    * @returns Liste des actions de l'utilisateur
    */
@@ -44,7 +44,7 @@ export class ActionService {
     try {
       return await Action.find({ userId });
     } catch (error) {
-      console.error('Erreur lors de la ru00e9cupu00e9ration des actions utilisateur:', error);
+      console.error('Erreur lors de la ruécupuération des actions utilisateur:', error);
       throw error;
     }
   }
@@ -52,7 +52,7 @@ export class ActionService {
   /**
    * Met u00e0 jour une action
    * @param actionId L'ID de l'action
-   * @param updateData Les donnu00e9es u00e0 mettre u00e0 jour
+   * @param updateData Les donnuées u00e0 mettre u00e0 jour
    * @returns L'action mise u00e0 jour
    */
   async updateAction(actionId: string, updateData: Partial<IAction>): Promise<IAction | null> {
@@ -71,7 +71,7 @@ export class ActionService {
   /**
    * Supprime une action
    * @param actionId L'ID de l'action u00e0 supprimer
-   * @returns true si supprimu00e9e, false sinon
+   * @returns true si supprimuée, false sinon
    */
   async deleteAction(actionId: string): Promise<boolean> {
     try {
