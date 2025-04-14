@@ -5,8 +5,13 @@
  * de réseau des utilisateurs (connexions, recommandations, etc.).
  */
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { logger } from '../utils/logger.js';
+
+// Définition des modèles d'URI pour éviter les erreurs d'URL
+const NETWORK_URI = new ResourceTemplate('network://user/{userId}', { userId: undefined });
+const CONNECTIONS_URI = new ResourceTemplate('connections://user/{userId}', { userId: undefined });
+const RECOMMENDATIONS_URI = new ResourceTemplate('recommendations://user/{userId}', { userId: undefined });
 
 // Donnuées factices pour simuler un ruéseau professionnel
 const mockNetworks = {
@@ -46,10 +51,12 @@ const mockNetworks = {
  * Ressource pour le réseau d'un utilisateur
  */
 export const registerNetworkResource = (server: McpServer) => {
-  server.resource({
-    name: 'network',
-    uriTemplate: 'network://user/{userId}',
-    handler: async (uri: URL, variables: Record<string, unknown>) => {
+  server.resource(
+    'network',
+    NETWORK_URI,
+    async (params: any) => {
+      const uri = new URL(params.uri);
+      const variables = params.variables || {};
       logger.info(`Resource called: network, URI: ${uri.href}, Variables: ${JSON.stringify(variables)}`);
       try {
         // Extraire l'ID de l'utilisateur
@@ -78,21 +85,21 @@ export const registerNetworkResource = (server: McpServer) => {
         };
       }
     }
-  });
+  );
 };
 
 /**
  * Ressource pour les connexions d'un utilisateur
  */
 export const registerConnectionsResource = (server: McpServer) => {
-  server.resource({
-    name: 'connections',
-    uriTemplate: 'connections://user/{userId}',
-    handler: async (uri: URL, variables: Record<string, unknown>) => {
-      logger.info(`Resource called: connections, URI: ${uri.href}, Variables: ${JSON.stringify(variables)}`);
-      try {
+  server.resource(
+    'connections',
+    CONNECTIONS_URI,
+   async (params: any) => {
+    const uri = new URL(params.uri); 
+    try {
         // Extraire l'ID de l'utilisateur
-        const userId = variables.userId as string;
+        const userId = params.userId as string;
         
         // En production, on récupèrerait les connexions de l'utilisateur depuis la base de données
         // const connections = await networkService.getUserConnections(userId);
@@ -118,21 +125,20 @@ export const registerConnectionsResource = (server: McpServer) => {
         };
       }
     }
-  });
+  );
 };
 
 /**
  * Ressource pour les recommandations d'un utilisateur
  */
 export const registerRecommendationsResource = (server: McpServer) => {
-  server.resource({
-    name: 'recommendations',
-    uriTemplate: 'recommendations://user/{userId}',
-    handler: async (uri: URL, variables: Record<string, unknown>) => {
-      logger.info(`Resource called: recommendations, URI: ${uri.href}, Variables: ${JSON.stringify(variables)}`);
-      try {
+  server.resource(
+    'recommendations',
+    RECOMMENDATIONS_URI,
+    async (params: any) => {
+      const uri = new URL(params.uri);try {
         // Extraire l'ID de l'utilisateur
-        const userId = variables.userId as string;
+        const userId = params.userId as string;
         
         // En production, on récupèrerait les recommandations de l'utilisateur depuis la base de données
         // const recommendations = await networkService.getUserRecommendations(userId);
@@ -158,14 +164,40 @@ export const registerRecommendationsResource = (server: McpServer) => {
         };
       }
     }
-  });
+  );
 };
 
+// Variable pour suivre si les ressources ont déjà été enregistrées
+let networkResourcesRegistered = false;
+
 /**
- * Fonction pour enregistrer toutes les ressources de ruéseau
+ * Fonction pour enregistrer toutes les ressources de réseau
+ * Utilise un flag global pour éviter les enregistrements multiples
  */
 export const registerAllNetworkResources = (server: McpServer) => {
-  registerNetworkResource(server);
-  registerConnectionsResource(server);
-  registerRecommendationsResource(server);
+  // Si les ressources ont déjà été enregistrées, ne rien faire
+  if (networkResourcesRegistered) {
+    logger.info('Ressources de réseau déjà enregistrées, ignorant...');
+    return;
+  }
+  
+  try {
+    // Enregistrer les ressources de réseau
+    logger.info('Enregistrement des ressources de réseau...');
+    
+    registerNetworkResource(server);
+    logger.info('Resource network enregistrée avec succès');
+    
+    registerConnectionsResource(server);
+    logger.info('Resource connections enregistrée avec succès');
+    
+    registerRecommendationsResource(server);
+    logger.info('Resource recommendations enregistrée avec succès');
+    
+    // Marquer les ressources comme enregistrées
+    networkResourcesRegistered = true;
+    logger.info('Toutes les ressources de réseau ont été enregistrées avec succès');
+  } catch (error) {
+    logger.error(`Erreur lors de l'enregistrement des ressources de réseau: ${error}`);
+  }
 };

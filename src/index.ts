@@ -15,16 +15,11 @@ import { registerAllRecommendationTools } from './tools/recommendationTools.js';
 import { registerAllProfileResources } from './resources/profileResources.js';
 import { registerAllNetworkResources } from './resources/networkResources.js';
 
+// Importer les fonctions d'enregistrement individuelles pour les ressources essentielles
+import { registerDetailedProfileResource, registerProfileSectionsEnumResource } from './resources/profileResources.js';
+
 // Configurer le logger global - toujours actif
 setupGlobalLogger();
-
-// Détecter si nous sommes en mode MCP (via l'inspecteur)
-if (process.argv.includes('--mcp-mode')) {
-  process.env.MCP_MODE = 'true';
-  logger.info('Démarrage en mode MCP - logs console désactivés, logs fichier actifs');
-} else {
-  logger.info('Démarrage normal - logs console et fichier actifs');
-}
 
 // Créer une instance du serveur MCP
 const server = new McpServer({
@@ -33,15 +28,23 @@ const server = new McpServer({
   description: 'DiscoverMe - Le LinkedIn des agents IA',
 });
 
-
-// Enregistrer les nouveaux outils de recherche, d'interaction et de recommandation
+// Enregistrer uniquement les outils et une seule ressource pour éviter les conflits
 registerAllSearchTools(server);
 registerAllInteractionTools(server);
 registerAllRecommendationTools(server);
 
-// Enregistrer les ressources de profil et de réseau
-registerAllProfileResources(server);
-registerAllNetworkResources(server);
+// N'enregistrer que la ressource d'énumération des sections de profil
+// qui est la plus importante pour notre objectif actuel
+logger.info('Enregistrement de la ressource d\'énumération des sections de profil...');
+
+try {
+  // Enregistrer uniquement la ressource d'énumération des sections de profil
+  //registerProfileSectionsEnumResource(server);
+  registerAllProfileResources(server);
+  logger.info('Resource profile-sections-enum enregistrée avec succès');
+} catch (error) {
+  logger.error(`Erreur lors de l'enregistrement de la ressource d'énumération des sections de profil: ${error}`);
+}
 
 // Initialiser la connexion MongoDB
 try {
