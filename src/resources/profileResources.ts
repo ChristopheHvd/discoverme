@@ -283,31 +283,23 @@ let profileResourcesRegistered = false;
 export const registerAllProfileResources = (server: McpServer) => {
   // Si les ressources ont déjà été enregistrées, ne rien faire
   if (profileResourcesRegistered) {
-    logger.info('Ressources de profil déjà enregistrées, ignorant...');
+    logger.info('Ressources de profil déjà enregistrées, ignoring...');
     return;
   }
   
   try {
     // Enregistrer les ressources de profil
-    logger.info('Enregistrement des ressources de profil...');
-    
     registerDetailedProfileResource(server);
-    logger.info('Resource detailed-profile enregistrée avec succès');
     
     registerUserSkillsResource(server);
-    logger.info('Resource user-skills enregistrée avec succès');
     
     registerUserExperienceResource(server);
-    logger.info('Resource user-experience enregistrée avec succès');
     
     registerUserEducationResource(server);
-    logger.info('Resource user-education enregistrée avec succès');
     
     registerProfileSectionResource(server);
-    logger.info('Resource profile-section enregistrée avec succès');
     
     registerProfileSectionsEnumResource(server);
-    logger.info('Resource profile-sections-enum enregistrée avec succès');
     
     // Marquer les ressources comme enregistrées
     profileResourcesRegistered = true;
